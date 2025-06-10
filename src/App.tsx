@@ -233,6 +233,17 @@ function App() {
   const [lastUpdated, setLastUpdated] = useState('');
   const [popup, setPopup] = useState<string | null>(null);
 
+  const formatKigaliTime = () => {
+    const now = new Date();
+    // Kigali is in CAT (Central African Time) which is UTC+2
+    const kigaliTime = new Date(now.getTime() + (2 * 60 * 60 * 1000));
+    return kigaliTime.toLocaleString('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
@@ -245,7 +256,7 @@ function App() {
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000 * 60 * 60);
     
-    setLastUpdated(new Date().toLocaleString());
+    setLastUpdated(formatKigaliTime());
 
     return () => clearInterval(interval);
   }, [dashboardConfig.eventStartDate]);
@@ -253,7 +264,7 @@ function App() {
   const handleSaveConfig = (newConfig: DashboardConfig) => {
     setDashboardConfig(newConfig);
     localStorage.setItem('dashboardConfig', JSON.stringify(newConfig));
-    setLastUpdated(new Date().toLocaleString());
+    setLastUpdated(formatKigaliTime());
     setPopup('Changes saved');
     setTimeout(() => setPopup(null), 2000);
   };
@@ -264,7 +275,7 @@ function App() {
     const handleSave = (newConfig: DashboardConfig) => {
       setDashboardConfig(newConfig);
       localStorage.setItem('dashboardConfig', JSON.stringify(newConfig));
-      setLastUpdated(new Date().toLocaleString());
+      setLastUpdated(formatKigaliTime());
       setPopup('Changes saved');
       setTimeout(() => setPopup(null), 2000);
       navigate('/');
@@ -558,7 +569,6 @@ function Dashboard({
         </SectionBox>
       </main>
       <footer className="text-center mt-16 text-gray-500 text-sm">
-        <p>&copy; 2025 UCI Road World Championships Kigali. All rights reserved.</p>
         <p>Dashboard last updated: {lastUpdated}</p>
       </footer>
     </>
